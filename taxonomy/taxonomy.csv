@@ -1,0 +1,10 @@
+common_species,common_variety,kingdom,phylum,class,order,family,subfamily,genus,species
+lemon,,Plantae,Tracheophyta,Magnoliopsida,Sapindales,Rutaceae,Aurantioideae,Citrus,Citrus x limon
+tomato,banana_legs,Plantae,Tracheophyta,Magnoliopsida,Solanales,Solanaceae,Solanum,,Solanum lycopersicum
+,,Plantae,Bryophyta,Takakiopsida,Takakiales,Takakiaceae,,Takakia,Takakia ceratophylla
+,,Plantae,Bryophyta,Sphagnopsida,Sphagnales,Sphagnaceae,,Sphagnum,Sphagnum wulfianum
+,,Plantae,Bryophyta,Takakiopsida,Takakiales,Takakiaceae,,Takakia,Takakia lepidozioides
+,,Plantae,Tracheophyta,Magnoliopsida,Myrtales,Onagraceae,Onagroideae,Epilobium,Epilobium alsinoides
+,,Plantae,Tracheophyta,Magnoliopsida,Rosales,Rhamnaceae,Thalictroideae,Frangula,Frangula henryi
+,,Plantae,,,,,,Aequitriradites,Aequitriradites dubius
+,,Plantae,Tracheophyta,Magnoliopsida,Gentianales,Rubiaceae,Secamonoideae,Mitragyna,Mitracarpus squarrosus
