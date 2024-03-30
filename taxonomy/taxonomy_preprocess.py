@@ -12,14 +12,14 @@ global find_pattern
 
 taxonomy = []
 
-
-with open('taxonomy_of_all_plants.txt', 'r', encoding="utf-8") as file:
-    text = file.read()
-    file.close()
-pattern = r'\s{2,}'
-elements = re.split(pattern, text)
-for _ in elements:
-    taxonomy.append(_)
+def taxonomy_data_loader():
+    with open('taxonomy_of_all_plants.txt', 'r', encoding="utf-8") as file:
+        text = file.read()
+        file.close()
+    pattern = r'\s{2,}'
+    elements = re.split(pattern, text)
+    for _ in elements:
+        taxonomy.append(_)
 
 '''
 def remove_until_last_space(input_name):
@@ -144,7 +144,7 @@ def main(input_name):
 
     #OPTIONAL!!
     print(time.time() - start_time)
-    os.system('pause')
+    #os.system('pause')
 
     #return remove_brackets(find_taxonomy(index, 1, concat('', found_string, '[species]'))[:-1].lower())
 
