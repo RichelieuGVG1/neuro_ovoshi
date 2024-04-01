@@ -1,57 +1,93 @@
-from LxmlSoup import LxmlSoup 
-import requests 
-import json 
-import time
- 
-for i in range(255400, 255800): 
-    timestart = time.time()
-    res = requests.post(f"https://plantpad.samlab.cn/api/disease/image/{i}") 
-    data = res.json() 
-  
-    if(data["species"]): 
-        title = data["species"]
-        discription = data["discription"]
-        symptoms = data["symptoms"]
-        signs = data["signs"]
-        type_of_disease = data["type_of_disease"]
-        mode_of_transmission = data["mode_of_transmission"]
-        development_process = data["development_process"]
-        environmental_conditions = data["environmental_conditions"]
-        overwintering = data["overwintering"]
-        chemical_control = data["chemical_control"]
-        physical_measures = data["physical_measures"]
-        biological_control = data["biological_control"]
-        agricultural_control = data["agricultural_control"]
-        resistance_level = data["resistance_level"]
-        apid_detection = data["apid_detection"]
-        infection_mechanism = data["infection_mechanism"]
-        genes_bacteria = data["genes_bacteria"]
+from LxmlSoup import LxmlSoup  
+import requests  
+import json  
+import time 
+import threading 
 
-        words= str("name: " + title + "\n" + "discription: " + discription + "\n" 
-                  + "disease_symptoms: " + symptoms + "\n" + "signs_of_disease: " + signs + "\n"
-                  + "type_of_disease:" + chemical_control + "\n" + "mode_of_transmission: " + mode_of_transmission + "\n"
-                  + "development_process: " + development_process 
-                  + "environmental_conditions: " + "\n" + environmental_conditions + "\n" 
-                  + "overwintering_method: " + overwintering + "\n" + "prevention_strategies: " + "\n" 
-                  + "chemical_control: "+ chemical_control + "\n" 
-                  + "physical_measures: " + physical_measures + "\n" + "biological_control" + biological_control 
-                  + "agricultural_control: " + agricultural_control + "\n" + "pathogenic_mechanism:" + "\n" 
-                  + "resistance_level: " + resistance_level + "\n" + "apid_detection: " + apid_detection + "\n" 
-                  + "infection_mechanism: " + infection_mechanism + "\n" + "genes_bacteria: " + genes_bacteria) 
-        
-        while(words.find("<a") != -1): 
-          start_index = words.find("<a") 
-          end_index = words.find("a>") 
-          words = words[:start_index] + words[end_index + 2:] 
-        
-        words = words.replace('<p>', '')
-        words = words.replace('</p>', '')
-        words = words.replace('["', '')
-        words = words.replace('"]', '')
-           
-        with open(f"scraper/text_daset/{title}.txt", 'w', encoding="utf-8") as file: 
-            file.write(words) 
-        timestop = time.time()
-        print(timestop - timestart)
-    else:
-        print("NO fail")
+def validator(item): 
+  item = item.replace('<p>', '') 
+  item = item.replace("</p>", '') 
+  item = item.replace('["', '') 
+  item = item.replace('"]', '')
+
+  while(str(item).find("<a") != -1):    
+    start_index = item.find("<a")  
+    end_index = item.find("a>")  
+    item = item[:start_index] + item[end_index + 2:] 
+
+  return item
+  
+def parsing(start , end ): 
+    for i in range(start, end):  
+        timestart = time.time() 
+        res = requests.post(f"https://plantpad.samlab.cn/api/disease/image/{i}")  
+        try:
+          data = res.json()
+        except:
+            continue  
+     
+        if(data["species"]):  
+            title = validator(data["species"]) 
+            discription = validator(data["discription"]) 
+            symptoms = validator(data["symptoms"]) 
+            signs = validator(data["signs"]) 
+            type_of_disease = validator(data["type_of_disease"]) 
+            mode_of_transmission = validator(data["mode_of_transmission"]) 
+            development_process = validator(data["development_process"]) 
+            environmental_conditions = validator(data["environmental_conditions"]) 
+            overwintering = validator(data["overwintering"]) 
+            chemical_control = validator(data["chemical_control"]) 
+            physical_measures = validator(data["physical_measures"]) 
+            biological_control = validator(data["biological_control"]) 
+            agricultural_control = validator(data["agricultural_control"]) 
+            resistance_level = validator(data["resistance_level"]) 
+            apid_detection = validator(data["apid_detection"]) 
+            infection_mechanism = validator(data["infection_mechanism"]) 
+            genes_bacteria = validator(data["genes_bacteria"])
+            print(genes_bacteria)
+            
+ 
+            words= { 
+                "title":title, 
+                "discription":discription, 
+                "symptoms":symptoms, 
+                "signs":signs, 
+                "type_of_disease":type_of_disease, 
+                "mode_of_transmission":mode_of_transmission, 
+                "development_process":development_process, 
+                "environmental_conditions":environmental_conditions, 
+                "overwintering":overwintering, 
+                "chemical_control":chemical_control, 
+                "physical_measures":physical_measures, 
+                "biological_control": biological_control, 
+                "agricultural_control":agricultural_control, 
+                "resistance_level":resistance_level, 
+                "apid_detection":apid_detection, 
+                "infection_mechanism":infection_mechanism, 
+                "genes_bacteria":genes_bacteria 
+            } 
+            for item in words.items():
+              item = str(item)
+              while(item.find("<a") != -1):  
+                  start_index = item.find("<a")  
+                  end_index = item.find("a>")  
+                  item = item[:start_index] + item[end_index + 2:]  
+                  
+                  item = item.replace('<p>', '') 
+                  item = item.replace('</p>', '') 
+                  item = item.replace('["', '') 
+                  item = item.replace('"]', '') 
+             
+            with open(f"scraper/text_daset/{str(i)+ title}.json", 'w', encoding="utf-8") as file:  
+                json.dump(words, file)   
+            timestop = time.time() 
+            print(timestop - timestart) 
+        else: 
+            print("NO fail") 
+ 
+ 
+for i in range(30): 
+    thread = threading.Thread(target=parsing,args=(i*1000+1,(i+1)*1000), name=f"Thread-{i}") 
+    thread.start() 
+ 
+thread.join()
