@@ -19,7 +19,6 @@ def validator(item):
   
 def parsing(start , end ): 
     for i in range(start, end):  
-        timestart = time.time() 
         res = requests.post(f"https://plantpad.samlab.cn/api/disease/image/{i}")  
         try:
           data = res.json()
@@ -44,8 +43,6 @@ def parsing(start , end ):
             apid_detection = validator(data["apid_detection"]) 
             infection_mechanism = validator(data["infection_mechanism"]) 
             genes_bacteria = validator(data["genes_bacteria"])
-            print(genes_bacteria)
-            
  
             words= { 
                 "title":title, 
@@ -78,14 +75,11 @@ def parsing(start , end ):
                   item = item.replace('["', '') 
                   item = item.replace('"]', '') 
              
-            with open(f"scraper/text_daset/{str(i)+ title}.json", 'w', encoding="utf-8") as file:  
+            with open(f"C:/Проект/scraper_2/test/{str(i) + title}.json", 'w', encoding="utf-8") as file:  
                 json.dump(words, file)   
-            timestop = time.time() 
-            print(timestop - timestart) 
         else: 
             print("NO fail") 
- 
- 
+
 for i in range(30): 
     thread = threading.Thread(target=parsing,args=(i*1000+1,(i+1)*1000), name=f"Thread-{i}") 
     thread.start() 
