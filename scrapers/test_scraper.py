@@ -1,15 +1,13 @@
 from LxmlSoup import LxmlSoup  
 import requests  
 import json  
-import time 
 import threading 
 import os
 
 def validator(item): 
-  item = item.replace('<p>', '') 
-  item = item.replace("</p>", '') 
-  item = item.replace('["', '') 
-  item = item.replace('"]', '')
+  item = item.replace('<p>', '').replace("</p>", '')
+  item = item.replace('["', '').replace('"]', '')
+  item = item.replace('\\', '').replace('"', '')
 
   while(str(item).find("<a") != -1):    
     start_index = item.find("<a")  
@@ -81,7 +79,7 @@ def parsing(start , end ):
         else: 
             print("NO fail") 
 
-for i in range(30): 
+for i in range(10): 
     thread = threading.Thread(target=parsing,args=(i*1000+1,(i+1)*1000), name=f"Thread-{i}") 
     thread.start() 
  
