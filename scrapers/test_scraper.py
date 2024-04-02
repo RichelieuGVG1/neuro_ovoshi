@@ -3,6 +3,7 @@ import requests
 import json  
 import time 
 import threading 
+import os
 
 def validator(item): 
   item = item.replace('<p>', '') 
@@ -75,8 +76,8 @@ def parsing(start , end ):
                   item = item.replace('["', '') 
                   item = item.replace('"]', '') 
              
-            with open(f"C:/Проект/scraper_2/test/{str(i) + title}.json", 'w', encoding="utf-8") as file:  
-                json.dump(words, file)   
+            with open(f"{str(i)}_{title}.json", 'w', encoding="utf-8") as file:  
+                json.dump(words, file)  
         else: 
             print("NO fail") 
 
