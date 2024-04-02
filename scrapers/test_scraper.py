@@ -62,17 +62,6 @@ def parsing(start , end ):
                 "infection_mechanism":infection_mechanism, 
                 "genes_bacteria":genes_bacteria 
             } 
-            for item in words.items():
-              item = str(item)
-              while(item.find("<a") != -1):  
-                  start_index = item.find("<a")  
-                  end_index = item.find("a>")  
-                  item = item[:start_index] + item[end_index + 2:]  
-                  
-                  item = item.replace('<p>', '') 
-                  item = item.replace('</p>', '') 
-                  item = item.replace('["', '') 
-                  item = item.replace('"]', '') 
              
             with open(f"{str(i)}_{title}.json", 'w', encoding="utf-8") as file:  
                 json.dump(words, file)  
