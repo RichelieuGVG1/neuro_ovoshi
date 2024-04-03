@@ -10,8 +10,8 @@ from urllib.parse import urlparse
 
 url = "https://ieee-dataport.org/topic-tags/artificial-intelligence"
 
-username = "pnahuj82@gmail.com"
-password = "tipgon-nUwxyc-8cysde"
+username = ""
+password = ""
 
 driver = webdriver.Chrome()
 
