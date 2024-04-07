@@ -42,7 +42,7 @@ def parsing(start , end ):
             apid_detection = validator(data["apid_detection"]) 
             infection_mechanism = validator(data["infection_mechanism"]) 
             genes_bacteria = validator(data["genes_bacteria"])
- 
+
             words= { 
                 "title":title, 
                 "discription":discription, 
@@ -62,14 +62,24 @@ def parsing(start , end ):
                 "infection_mechanism":infection_mechanism, 
                 "genes_bacteria":genes_bacteria 
             } 
-             
-            with open(f"{str(i)}_{title}.json", 'w', encoding="utf-8") as file:  
-                json.dump(words, file)  
+
+            if (title == '' and discription == '' and symptoms == '' and signs == ''):
+               continue
+            else:
+              with open(f"plantpad/{str(i)}_{title}.json", 'w', encoding="utf-8") as file:  
+                  json.dump(words, file)  
         else: 
             print("NO fail") 
 
-for i in range(10): 
-    thread = threading.Thread(target=parsing,args=(i*1000+1,(i+1)*1000), name=f"Thread-{i}") 
-    thread.start() 
- 
-thread.join()
+def main():
+  if os.path.exists('plantpad') == False:
+    os.mkdir('plantpad')
+
+  for i in range(10): 
+      thread = threading.Thread(target=parsing,args=(i*30000+1,(i+1)*30000), name=f"Thread-{i}") 
+      thread.start() 
+  
+  thread.join()
+
+if __name__ == "__main__":
+   main()
