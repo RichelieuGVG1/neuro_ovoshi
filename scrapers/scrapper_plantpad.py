@@ -24,7 +24,9 @@ def parsing(start , end ):
         except:
             continue  
      
-        if(data["species"]):  
+        if(data["species"]):
+            name = data["name"]
+            path = data["path"]  
             title = validator(data["species"]) 
             discription = validator(data["discription"]) 
             symptoms = validator(data["symptoms"]) 
@@ -63,11 +65,23 @@ def parsing(start , end ):
                 "genes_bacteria":genes_bacteria 
             } 
 
+            link = (f"https://plant-1302037000.cos.na-siliconvalley.myqcloud.com/data//{name}/{path}")
+            res1 = requests.get(link)
+
+            with open(f"plantpad/{str(i)}_{title}.jpg", "wb") as f:
+              f.write(res1.content)
+
             if (title == '' and discription == '' and symptoms == '' and signs == ''):
                continue
             else:
               with open(f"plantpad/{str(i)}_{title}.json", 'w', encoding="utf-8") as file:  
-                  json.dump(words, file)  
+                  json.dump(words, file) 
+            
+            link = (f"https://plant-1302037000.cos.na-siliconvalley.myqcloud.com/data//{name}/{path}")
+            res1 = requests.get(link)
+
+            with open(f"plantpad/{str(i)}.jpg", "wb") as f:
+              f.write(res1.content) 
         else: 
             print("NO fail") 
 
