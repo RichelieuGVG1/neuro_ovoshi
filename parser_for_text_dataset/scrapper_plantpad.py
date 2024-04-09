@@ -16,7 +16,7 @@ def validator(item):
 
   return item
   
-def parsing(start , end ): 
+def parsing(start, end): 
     for i in range(start, end):  
         res = requests.post(f"https://plantpad.samlab.cn/api/disease/image/{i}")  
         try:
@@ -45,7 +45,7 @@ def parsing(start , end ):
             infection_mechanism = validator(data["infection_mechanism"]) 
             genes_bacteria = validator(data["genes_bacteria"])
 
-            words= { 
+            words = { 
                 "title":title, 
                 "discription":discription, 
                 "symptoms":symptoms, 
@@ -90,7 +90,7 @@ def main():
     os.mkdir('plantpad')
 
   for i in range(10): 
-      thread = threading.Thread(target=parsing,args=(i*30000+1,(i+1)*30000), name=f"Thread-{i}") 
+      thread = threading.Thread(target = parsing,args = (i*30000+1,(i+1)*30000), name = f"Thread-{i}") 
       thread.start() 
   
   thread.join()
