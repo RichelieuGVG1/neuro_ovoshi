@@ -11,7 +11,7 @@ def filter_role_attribute(value):
     return value is None or value != 'presentation' 
  
 def next_step(link): 
-    links =[] 
+    links = [] 
     html = requests.get(f'https://en.wikipedia.org{link}').text 
     soup = BeautifulSoup(html, 'html.parser')   
 
@@ -19,15 +19,15 @@ def next_step(link):
     os.mkdir(link_dir) 
 
     no_table_presentation_nnot_valid = soup.find_all('table', role=filter_role_attribute) 
-    no_table_presentation=[] 
+    no_table_presentation = [] 
     for table in no_table_presentation_nnot_valid: 
          if ("border-spacing:0;background:transparent;color:inherit" not in table.get("style", "")) and ("nowraplinks" not in table.get("class", "")): 
             no_table_presentation.append(table) 
-    if (len(no_table_presentation)==0): 
+    if (len(no_table_presentation) == 0): 
         if(len(soup.find_all('div', class_="div-col")) == 0): 
-            container =soup.find_all('li') 
+            container = soup.find_all('li') 
         else: 
-            container =soup.find_all('div', class_="div-col") 
+            container = soup.find_all('div', class_="div-col") 
         for links_L in container: 
             links_ = links_L.find_all("a") 
             for link in links_: 
@@ -36,7 +36,7 @@ def next_step(link):
  
     else:  
         for table in no_table_presentation: 
-            TRs= table.find_all('tr')   
+            TRs = table.find_all('tr')   
             for tr in TRs: 
                 if(str(tr).find("class=\"navbox-list navbox-odd\""))!=-1: 
                     break 
@@ -60,19 +60,19 @@ def next_step(link):
     parsing_page(trimmed_links, link_dir) 
     
 def parsing_page(links:list, link_dir:str): 
-    counter =0 
+    counter = 0 
     wikipedia.set_lang("en") 
     for link in links: 
         counter+=1 
         try : 
             pythin_page = wikipedia.page(f'{link}') 
-            result_dict ={} 
-            result_dict['title'] =pythin_page.original_title 
-            result_dict['summary']= pythin_page.summary 
+            result_dict = {} 
+            result_dict['title'] = pythin_page.original_title 
+            result_dict['summary'] = pythin_page.summary 
             result_dict['Origins'] = pythin_page.section("Origins") 
             result_dict['Description'] = pythin_page.section("Description") 
             result_dict['Characteristics'] = pythin_page.section( "Characteristics") 
-            keys_to_remove =[] 
+            keys_to_remove = [] 
             for key , value in  result_dict.items(): 
                if not value: 
                    keys_to_remove.append(key) 
