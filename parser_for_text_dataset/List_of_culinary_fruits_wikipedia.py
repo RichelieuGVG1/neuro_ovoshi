@@ -17,16 +17,13 @@ def search_and_scrape(wiki_url):
         result_dict['Characteristics'] = page.section("Characteristics")
         result_dict['Cultivars'] = page.section("Cultivars")
         result_dict['Botany'] = page.section("Botany")
-
-        # Remove keys with empty values
         result_dict = {k: v for k, v in result_dict.items() if v}
 
         if len(result_dict) > 1:
             with open(f'{name_folder}/{result_dict["title"]}.json', 'w') as json_file:
                 json.dump(result_dict, json_file)
-    except Exception as e:
+    except Exception:
         print(f"Error getting page: {wiki_url}")
-        print(e)
 
 url = "https://en.wikipedia.org/wiki/List_of_culinary_fruits"
 clsas_tables = "wikitable sortable sticky-header"
