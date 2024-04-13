@@ -12,14 +12,14 @@ global find_pattern
 
 taxonomy = []
 
-def taxonomy_data_loader():
-    with open('taxonomy_of_all_plants.txt', 'r', encoding="utf-8") as file:
-        text = file.read()
-        file.close()
-    pattern = r'\s{2,}'
-    elements = re.split(pattern, text)
-    for _ in elements:
-        taxonomy.append(_)
+
+with open('taxonomy_of_all_plants.txt', 'r', encoding="utf-8") as file:
+    text = file.read()
+    file.close()
+pattern = r'\s{2,}'
+elements = re.split(pattern, text)
+for _ in elements:
+    taxonomy.append(_)
 
 '''
 def remove_until_last_space(input_name):
@@ -127,10 +127,11 @@ def find_taxonomy(index, tax_index, string):
 def main(input_name):
     start_time = time.time()
 
+
     print('program started.')
     #input_name = input('Enter certain name of species>')
 
-    index, found_string = find_path(list(map(lambda x: x.lower(), taxonomy)), input_name.lower().strip())
+    index, found_string = find_path(list(map(lambda x: x.lower(), taxonomy)), re.sub(r'<[^>]*>', ' ', input_name).lower().strip())
 
     #print(remove_trash_from_string(taxonomy[index-1]), 2)
 
@@ -144,7 +145,7 @@ def main(input_name):
 
     #OPTIONAL!!
     print(time.time() - start_time)
-    #os.system('pause')
+    os.system('pause')
 
     #return remove_brackets(find_taxonomy(index, 1, concat('', found_string, '[species]'))[:-1].lower())
 
