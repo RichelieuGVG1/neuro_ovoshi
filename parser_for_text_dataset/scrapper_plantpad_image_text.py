@@ -16,9 +16,10 @@ def validator(item):
 
   return item
   
-def parsing(start, end): 
+def parsing(start , end ):
+    url = "https://plantpad.samlab.cn/api/disease/image/" 
     for i in range(start, end):  
-        res = requests.post(f"https://plantpad.samlab.cn/api/disease/image/{i}")  
+        res = requests.post(f"{url}{i}")  
         try:
           data = res.json()
         except:
@@ -45,7 +46,7 @@ def parsing(start, end):
             infection_mechanism = validator(data["infection_mechanism"]) 
             genes_bacteria = validator(data["genes_bacteria"])
 
-            words = { 
+            words= { 
                 "title":title, 
                 "discription":discription, 
                 "symptoms":symptoms, 
@@ -64,33 +65,33 @@ def parsing(start, end):
                 "infection_mechanism":infection_mechanism, 
                 "genes_bacteria":genes_bacteria 
             } 
-
-            link = (f"https://plant-1302037000.cos.na-siliconvalley.myqcloud.com/data//{name}/{path}")
+            url_2 = "https://plant-1302037000.cos.na-siliconvalley.myqcloud.com/data//"
+            link = (f"{url_2}{name}/{path}")
             res1 = requests.get(link)
 
-            with open(f"plantpad/{str(i)}_{title}.jpg", "wb") as f:
-              f.write(res1.content)
+            with open(f"{folder_image}/{title}.jpg", "wb") as f:
+              f.write(res1.content) 
 
             if (title == '' and discription == '' and symptoms == '' and signs == ''):
                continue
             else:
-              with open(f"plantpad/{str(i)}_{title}.json", 'w', encoding="utf-8") as file:  
+              with open(f"{folder_text}/{title}.json", 'w', encoding="utf-8") as file:  
                   json.dump(words, file) 
-            
-            link = (f"https://plant-1302037000.cos.na-siliconvalley.myqcloud.com/data//{name}/{path}")
-            res1 = requests.get(link)
 
-            with open(f"plantpad/{str(i)}.jpg", "wb") as f:
-              f.write(res1.content) 
         else: 
-            print("NO fail") 
+            print("NO fail")
+
+folder_text = "plantpad_text"
+folder_image = "plantpad_image"
 
 def main():
-  if os.path.exists('plantpad') == False:
-    os.mkdir('plantpad')
+  if os.path.exists(folder_text) == False:
+    os.mkdir(folder_text)
+  if os.path.exists(folder_image) == False:
+     os.mkdir(folder_image)
 
   for i in range(10): 
-      thread = threading.Thread(target = parsing,args = (i*30000+1,(i+1)*30000), name = f"Thread-{i}") 
+      thread = threading.Thread(target=parsing,args=(i*30000+1,(i+1)*30000), name=f"Thread-{i}") 
       thread.start() 
   
   thread.join()
