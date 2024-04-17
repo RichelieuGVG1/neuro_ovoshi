@@ -5,7 +5,16 @@ import logging
 
 
 def download_file(url, directory, filename):
-    response = requests.get(url)
+
+    header = requests.utils.default_headers()
+    headers.update(
+        {
+        'User-Agent': 'My User Agent 1.0',
+        }
+    )
+        
+        
+    response = requests.get(url, headers=headers)
     
     with open(os.path.join(directory, filename), 'wb') as f:
         f.write(response.content)
