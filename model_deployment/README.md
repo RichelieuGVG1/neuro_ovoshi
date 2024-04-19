@@ -5,6 +5,8 @@
 
 Перейдя по этой ссылке   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1D_Z8VXjrZ1uBl0bYCxGRR_gN6ouvGdJ-#scrollTo=Gn_aDdKTZFz2) 
 вы попадете в google colab, где описаны шаги по запуску модели, скачивания, разархивации и прогона датасета с последующей записи в csv файл по результатам детекции.
+Посмотреть результаты по детекции датасетов можно посмотреть по этой ссылке [dataset_detection_result](https://drive.google.com/drive/folders/1qVGNKHYuTUmOLm4piBOVG_YVmJR7uGV3?usp=share_link)
+
 
 
 
