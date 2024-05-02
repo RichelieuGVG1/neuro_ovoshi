@@ -141,11 +141,11 @@ def main(input_name):
         make_csv(output)
     else:
         print("no matches found")
-        quit()
+        #quit()
 
     #OPTIONAL!!
     print(time.time() - start_time)
-    os.system('pause')
+    #os.system('pause')
 
     #return remove_brackets(find_taxonomy(index, 1, concat('', found_string, '[species]'))[:-1].lower())
 
