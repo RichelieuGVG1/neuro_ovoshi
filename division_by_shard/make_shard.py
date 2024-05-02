@@ -1,30 +1,36 @@
 import os
+from typing import Tuple, Dict
 import pandas as pd
 import shutil
 import zipfile
 from PIL import Image
 
-def subshard_path(root, shard_id, subshard_id):
-    return os.path.join(root, "{:04d}_{:04d}".format(int(shard_id), int(subshard_id)))
 
-def zip_shard(shard_dir):
+def subshard_path(root: str, shard_id: int, subshard_id: int) -> str:
+    return os.path.join(root, "{:04d}_{:04d}".format(shard_id, subshard_id))
+
+
+def zip_shard(shard_dir: str) -> None:
     zip_filename = shard_dir + '.zip'
     with zipfile.ZipFile(zip_filename, 'w') as zipf:
         for root, _, files in os.walk(shard_dir):
             for file in files:
-                zipf.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), os.path.join(shard_dir, '..')))
+                zipf.write(os.path.join(root, file),
+                           os.path.relpath(os.path.join(root, file), os.path.join(shard_dir, '..')))
 
-def add_to_shard(image_path, dataset_name, shard_root, taxonomy_df):
-    shard_id = os.path.basename(shard_root)  
+
+def add_to_shard(image_path: str, dataset_name: str, shard_root: str, taxonomy_df: pd.DataFrame) -> None:
+    shard_id = os.path.basename(shard_root)
     subshard_id = 0
     columns = [
         'dataset_name', 'common_species', 'common_variety', 'kingdom', 'phylum',
         'class', 'order', 'family', 'subfamily', 'genus', 'species',
-        'image_path', 'height', 'width', 'болезнь', 'гниль', 'возраст', 'зрелость', 'кол-во', 'вес', 'часть_растения', 'тип_фона'
+        'image_path', 'height', 'width', 'disease', 'rot', 'age', 'maturity', 'quantity', 'weight',
+        'part_of_a_plant', 'background_type'
     ]
 
     while True:
-        subshard_dir = subshard_path(shard_root, shard_id, subshard_id)
+        subshard_dir = subshard_path(shard_root, int(shard_id), subshard_id)
         csv_file = os.path.join(shard_root, f"{shard_id}_{subshard_id:04d}.csv")
 
         if not os.path.exists(csv_file):
@@ -53,9 +59,10 @@ def add_to_shard(image_path, dataset_name, shard_root, taxonomy_df):
         return
 
     taxonomy_info = taxonomy_row.iloc[0]
-    species_info = {'dataset_name': dataset_name, 'image_path': os.path.relpath(image_path, shard_root), 'height': None, 'width': None}
+    species_info: Dict[str, any] = {'dataset_name': dataset_name, 'image_path': os.path.relpath(image_path, shard_root),
+                                     'height': None, 'width': None}
     for column in csv_data.columns:
-        if column != 'dataset_name' and column != 'image_path' and column != 'height' and column != 'width':
+        if column not in ['dataset_name', 'image_path', 'height', 'width']:
             species_info[column.lower().replace(' ', '_')] = taxonomy_info.get(column, None)
 
     img = Image.open(image_path)
@@ -81,18 +88,23 @@ def add_to_shard(image_path, dataset_name, shard_root, taxonomy_df):
     if len(csv_data) == 1000:
         zip_shard(subshard_dir)
 
-dataset_name = "citrus_fruits"
-shard_root = "/Users/romeo/Desktop/Dataset/0000"
-taxonomy_file = "/Users/romeo/Desktop/Dataset/citrus_fruits/taxonomy.csv"
-image_dir = "/Users/romeo/Desktop/Dataset/citrus_fruits"
 
-taxonomy_df = pd.read_csv(taxonomy_file)
-for column in taxonomy_df.columns:
-    if column != 'image_path' and taxonomy_df[column].dtype == 'object':
-        taxonomy_df[column] = taxonomy_df[column].str.replace(' ', '_').str.lower()
+def main(dataset_name: str, shard_root: str, taxonomy_file: str, image_dir: str) -> None:
+    taxonomy_df = pd.read_csv(taxonomy_file)
+    for column in taxonomy_df.columns:
+        if column != 'image_path' and taxonomy_df[column].dtype == 'object':
+            taxonomy_df[column] = taxonomy_df[column].str.replace(' ', '_').str.lower()
 
-for root, dirs, files in os.walk(image_dir):
-    for file in files:
-        if file.endswith(".jpg"):
-            image_path = os.path.join(root, file)
-            add_to_shard(image_path, dataset_name, shard_root, taxonomy_df)
+    for root, dirs, files in os.walk(image_dir):
+        for file in files:
+            if file.endswith(".jpg"):
+                image_path = os.path.join(root, file)
+                add_to_shard(image_path, dataset_name, shard_root, taxonomy_df)
+
+
+if __name__ == "__main__":
+    dataset_name = "tomato_cultivars"
+    shard_root = "/Users/romeo/Desktop/Dataset/0000"
+    taxonomy_file = "/Users/romeo/Desktop/Dataset/tomato_cultivars/taxonomy.csv"
+    image_dir = "/Users/romeo/Desktop/Dataset/tomato_cultivars"
+    main(dataset_name, shard_root, taxonomy_file, image_dir)
