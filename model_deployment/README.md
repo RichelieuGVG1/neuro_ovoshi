@@ -16,5 +16,5 @@
 ## Open-Clip
 Using OpenCLIP at Hugging Face
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1BXodXgMblyhUzQ0uGrViXvFo8L2Q4PwV#scrollTo=kZkk-IgWR7JN)
-
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1HfuX3P2IwmGODzWnczO8uShhCUp5BhEp?hl=ru#scrollTo=fGnaIb8kSX-q)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1DAmUGwVFkUS_sBI48ZQx8qyKvi17scBs?hl=ru#scrollTo=en7snzd9oyG_)
