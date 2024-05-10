@@ -8,7 +8,7 @@ import os
 global client
 
 def upload(path, client):
-	print(client)
+	#print(client)
 	if '/' in path:
 		zipfilename=path.rsplit('/', 1)[1] + '.zip'
 	else:
@@ -22,14 +22,18 @@ def upload(path, client):
 	new_name = zipfilename.rsplit('.', 1)[0] + '.abc'
 	shutil.copyfile(zipfilename, new_name)
     # Загружает "file_to_upload.txt" в "/destination.txt"
-	client.upload("tomato1.abc", f"/Agro Filtered/{new_name}")
+	#print(new_name, zipfilename)
+	client.upload(new_name, f"/Agro Filtered/{new_name}")
 	os.remove(zipfilename)
 	os.remove(new_name)
 	print(f'Шард загружен. Время выполнения: {round(time.time()-start)} сек.')
 
 
 def download(path, client):
-	client.download(f"/Agro Filtered/{path}.abc", f"{path}.abc")
+	if path.isdigit():
+		client.download(f"/Agro Filtered/{path}", f"{path}.abc")
+	else:
+		client.download(f"/Agro Filtered/{path}.abc", f"{path}.abc")
 	shutil.copyfile(f"{path}.abc", f"{path}.zip")
 
 	with zipfile.ZipFile(f"{path}.zip", 'r') as zip_ref:
@@ -44,6 +48,8 @@ def main(file_path, operation):
 	with open('yandex token.txt', 'r') as file:
 		token = file.read().strip()
 		client = yadisk.Client(token=token)
+
+	#print(list(client.listdir("disk:/Agro Filtered")))
 
 	if client.check_token()==False:
 		print("Ошибка токена.")
