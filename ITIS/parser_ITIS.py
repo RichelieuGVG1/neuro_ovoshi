@@ -14,7 +14,7 @@ def find_name(palnets):
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
 
-    url = 'https://www.itis.gov/servlet/SingleRpt/SingleRpt'  # Замените на ваш URL
+    url = 'https://www.itis.gov/servlet/SingleRpt/SingleRpt'
 
     max_attempts = 3
     attempt = 0
