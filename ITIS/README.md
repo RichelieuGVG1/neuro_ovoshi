@@ -23,5 +23,5 @@
 ## Требования
 
 - Библиотека Selenium
-- Если Selenium у вас отсутствует, то введите это в терминал `pip3 instal selenium`
+- Если Selenium у вас отсутствует, то установите его введя команду `pip3 instal selenium`
 - Драйвер Chrome (если вы используете Chrome)
