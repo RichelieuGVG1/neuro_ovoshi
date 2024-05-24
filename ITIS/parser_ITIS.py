@@ -8,14 +8,25 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import Select
 import time
 
-def find_name(palnets):
+
+def find_plant(filtered_lines):
+    keywords_order = ["Variety", "Species", "Genus"]
+    
+    for keyword in keywords_order:
+        matching_lines = [line for line in filtered_lines if keyword in line]
+        if len(matching_lines) == 1:
+            return matching_lines[0]
+    
+    return None
+
+
+def find_name(plants):
     
     chrome_options = Options()
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
 
     url = 'https://www.itis.gov/servlet/SingleRpt/SingleRpt'
-
     max_attempts = 3
     attempt = 0
     success = False
@@ -43,7 +54,7 @@ def find_name(palnets):
             input_field = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.NAME, "search_value"))
             )
-            input_field.send_keys(palnets)
+            input_field.send_keys(plants)
 
             print("Текст успешно введен в поле ввода.")
 
@@ -61,19 +72,16 @@ def find_name(palnets):
             result_text = element.text
 
             lines = result_text.split("\n")
+
             filtered_lines = [line for line in lines if line.endswith("accepted") and "not accepted"
-                            not in line and line.split("–")[0].replace(" ", "") == palnets]
-            if not filtered_lines:
-                filtered_lines = [line for line in lines if line.endswith("accepted") and "not accepted" not in line]
-            line = ""
+                            not in line and line.split("–")[0].replace(" ", "") == plants]
 
-            for i in filtered_lines:
-                if i.find(palnets) != -1:
-                    line = i
-                    break
-
-            if not line:
-                line = filtered_lines[0]
+            line = find_plant(filtered_lines)
+            if line:
+                print("Найдено соответствующая строка:")
+                print(line)
+            else:
+                print("Соответствующая строка не найдена.")
 
             start_word_1 = "–"
             end_word_1 = ":"
@@ -92,7 +100,7 @@ def find_name(palnets):
             if start_index_2 != -1 and end_index_2 != -1:
                 line = line[:start_index_2] + line[end_index_2 + len(end_word_2):]
 
-            with open('file.txt', 'a') as f:
+            with open('common_name.txt', 'a') as f:
                 f.write(f'{line}\n')
 
             success = True
@@ -104,7 +112,7 @@ def find_name(palnets):
     if not success:
         print("Не удалось выполнить задачу за 3 попытки.")
 
-dir_path = 'C:\\Users\\nleon\\YandexDisk\\All_Agro_Datasets_Raw\\Fruit 101 dataset'
+dir_path = 'C:\\Users\\nleon\\YandexDisk\\All_Agro_Datasets_Raw\\test'
 folder_names = [name for name in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, name))]
 
 for palenet in folder_names:
