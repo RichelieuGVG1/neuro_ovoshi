@@ -20,10 +20,35 @@ def find_plant(filtered_lines):
     return None
 
 
+def clear_plants(line):
+
+    start_word_1 = "–"
+    end_word_1 = ":"
+    start_word_2 = "–"
+    end_word_2 = "accepted"
+
+    start_index_1 = line.find(start_word_1)
+    end_index_1 = line.find(end_word_1, start_index_1)
+
+    if start_index_1 != -1 and end_index_1 != -1:
+        line = line[:start_index_1] + ":" + line[end_index_1 + len(end_word_1):]
+
+    start_index_2 = line.find(start_word_2)
+    end_index_2 = line.find(end_word_2, start_index_2)
+
+    if start_index_2 != -1 and end_index_2 != -1:
+        line = line[:start_index_2] + line[end_index_2 + len(end_word_2):]
+
+    pattern = r"(\s[A-Za-z]+\s*)\."
+    cleaned_lines = re.sub(pattern, "", line)
+
+    return cleaned_lines
+
+
 def find_name(plants):
     
     chrome_options = Options()
-    chrome_options.add_argument('--headless')
+    #chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
 
     url = 'https://www.itis.gov/servlet/SingleRpt/SingleRpt'
@@ -77,31 +102,17 @@ def find_name(plants):
                             not in line and line.split("–")[0].replace(" ", "") == plants]
 
             line = find_plant(filtered_lines)
+            
             if line:
                 print("Найдено соответствующая строка:")
                 print(line)
             else:
                 print("Соответствующая строка не найдена.")
 
-            start_word_1 = "–"
-            end_word_1 = ":"
-            start_word_2 = "–"
-            end_word_2 = "accepted"
-
-            start_index_1 = line.find(start_word_1)
-            end_index_1 = line.find(end_word_1, start_index_1)
-
-            if start_index_1 != -1 and end_index_1 != -1:
-                line = line[:start_index_1] + ":" + line[end_index_1 + len(end_word_1):]
-
-            start_index_2 = line.find(start_word_2)
-            end_index_2 = line.find(end_word_2, start_index_2)
-
-            if start_index_2 != -1 and end_index_2 != -1:
-                line = line[:start_index_2] + line[end_index_2 + len(end_word_2):]
+            clear_name = clear_plants(line)
 
             with open('common_name.txt', 'a') as f:
-                f.write(f'{line}\n')
+                f.write(f'{clear_name}\n')
 
             success = True
         except Exception as e:
