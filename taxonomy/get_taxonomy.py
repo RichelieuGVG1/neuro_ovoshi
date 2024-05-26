@@ -1,47 +1,26 @@
 import csv
 import os
 import time
-import logging
-import io
-import sys
 import re
-
-global input_name
-global taxonomy
-global find_pattern
 
 taxonomy = []
 
-
 with open('taxonomy_of_all_plants.txt', 'r', encoding="utf-8") as file:
     text = file.read()
-    file.close()
+
 pattern = r'\s{2,}'
 elements = re.split(pattern, text)
-for _ in elements:
-    taxonomy.append(_)
+for element in elements:
+    taxonomy.append(element)
 
-'''
-def remove_until_last_space(input_name):
-    last_space_index = input_name.rfind(' ')
-    if last_space_index != -1:
-        return input_name[last_space_index + 1:]
-    else:
-        return None
-'''
-
-def make_csv(string):
+def make_csv(common_species, common_variety,disease,rot, string):
     elements = string.split('_')
     elements = [element.replace('0', '') for element in elements]
-    elements = [''] * 2 + elements
+    elements = [common_species, common_variety, disease,rot] + elements
 
     with open('taxonomy.csv', 'a+', newline='') as file:
         writer = csv.writer(file)
-        
         writer.writerow(elements)
-    
-    #file.close()
-
 
 def remove_trash_from_string(string):
     for i, char in enumerate(string[1:], start=1):
@@ -53,43 +32,27 @@ def remove_trash_from_string(string):
                 return string[:i] 
     return string 
 
-
 def clear_authors(input_string):
-    
     parts = input_string.split('_')
     for i, part in enumerate(parts):
-        
         first_space_index = part.find(' ')
-        
-        if first_space_index != -1:
+        if (first_space_index != -1):
             second_space_index = part.find(' ', first_space_index + 1)
-            if second_space_index != -1:
+            if (second_space_index != -1):
                 parts[i] = part[:second_space_index].strip()
-
         if part.endswith('.'):
             parts[i] = part[:part.find(' ')].strip()
-
-    #return '_'.join(parts)
     return input_string
 
-
 def find_path(taxonomy, input_name):
-    #print(1)
-    #print(input_name)
     pattern = re.compile(re.escape(input_name))
-
     for index, item in enumerate(taxonomy, start=1):
         if re.search(pattern, item):
             return index, item
-
-    # find_path(taxonomy, remove_until_last_space(input_name))
     if input_name.rfind(' ') != -1:
-        # find_path(taxonomy, input_name[:input_name.rfind(' ')])
         return find_path(list(map(lambda x: x.lower(), taxonomy)), input_name[:input_name.rfind(' ')])
-        return 0
     else:
         return None, None
-
 
 def remove_brackets(input_string):
     return re.sub(r'\[.*?\]', '', input_string).strip()
@@ -117,37 +80,45 @@ def find_taxonomy(index, tax_index, string):
     if found_flag == 0:
         returned_string = '0'
 
-    #print(remove_trash_from_string(returned_string), 1)
-    if tax_index == 7: #ВАЖНЫЙ ИНДЕКС ДЛЯ ДОБАВЛЕНИЯ НОВЫХ ТАКСОНОВ!!!
+    if tax_index == 7:
         return print_stroke(concat(string, remove_trash_from_string(returned_string), find_pattern[tax_index]))
     else:
         return find_taxonomy(index, tax_index + 1, concat(string, remove_trash_from_string(returned_string), find_pattern[tax_index]))
 
-
-def main(input_name):
+def main(common_species, common_variety, disease,rot, input_name):
     start_time = time.time()
-
-
     print('program started.')
-    #input_name = input('Enter certain name of species>')
 
     index, found_string = find_path(list(map(lambda x: x.lower(), taxonomy)), re.sub(r'<[^>]*>', ' ', input_name).lower().strip())
 
-    #print(remove_trash_from_string(taxonomy[index-1]), 2)
-
     if found_string is not None:
-        output=remove_brackets(find_taxonomy(index, 1, concat('', remove_trash_from_string(taxonomy[index-1]), '[species]'))[:-1])
+        output = remove_brackets(find_taxonomy(index, 1, concat('', remove_trash_from_string(taxonomy[index-1]), '[species]'))[:-1])
         print(output)
-        make_csv(output)
+        make_csv(common_species, common_variety, disease,rot,  output)
     else:
         print("no matches found")
-        #quit()
 
-    #OPTIONAL!!
     print(time.time() - start_time)
-    #os.system('pause')
 
-    #return remove_brackets(find_taxonomy(index, 1, concat('', found_string, '[species]'))[:-1].lower())
+def main_batch(file_path):
+    with open(file_path, "r", encoding='utf-8') as file:
+        reader = csv.DictReader(file)
+        headers = reader.fieldnames
+        print(f"Headers found: {headers}")  # Debug print
+        for row in reader:
+            species = row.get('species')
+            common_species = row.get('common_species', '')
+            common_variety = row.get('common_variety', '')
+            disease = row.get('disease', '')
+            rot = row.get('rot', '')
+            if species:
+                main(common_species, common_variety,disease,rot, species.strip())
+            else:
+                print("No 'species' column found in the row")
 
 if __name__ == '__main__':
-    main()
+    with open('taxonomy.csv', 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow(['common_species', 'common_variety','disease','rot', 'kingdom', 'phylum', 'class', 'order', 'family', 'subfamily', 'genus', 'species'])
+
+    main_batch('dataset_information.csv')
