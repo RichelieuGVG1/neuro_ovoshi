@@ -3,24 +3,16 @@ import os
 import time
 import re
 
-taxonomy = []
-
-with open('taxonomy_of_all_plants.txt', 'r', encoding="utf-8") as file:
-    text = file.read()
-
-pattern = r'\s{2,}'
-elements = re.split(pattern, text)
-for element in elements:
-    taxonomy.append(element)
 
 def make_csv(common_species, common_variety,disease,rot, string):
     elements = string.split('_')
     elements = [element.replace('0', '') for element in elements]
     elements = [common_species, common_variety, disease,rot] + elements
 
-    with open('taxonomy.csv', 'a+', newline='') as file:
+    with open(get_taxonomy, 'a+', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(elements)
+
 
 def remove_trash_from_string(string):
     for i, char in enumerate(string[1:], start=1):
@@ -31,6 +23,7 @@ def remove_trash_from_string(string):
             else:
                 return string[:i] 
     return string 
+
 
 def clear_authors(input_string):
     parts = input_string.split('_')
@@ -44,6 +37,7 @@ def clear_authors(input_string):
             parts[i] = part[:part.find(' ')].strip()
     return input_string
 
+
 def find_path(taxonomy, input_name):
     pattern = re.compile(re.escape(input_name))
     for index, item in enumerate(taxonomy, start=1):
@@ -54,14 +48,18 @@ def find_path(taxonomy, input_name):
     else:
         return None, None
 
+
 def remove_brackets(input_string):
     return re.sub(r'\[.*?\]', '', input_string).strip()
+
 
 def concat(string, new_str, remove_word):
     return f"{string.strip()}_{new_str.replace(remove_word, '').strip()}"
 
+
 def print_stroke(input_str):
     return '_'.join(reversed(input_str.split('_')))
+
 
 def find_taxonomy(index, tax_index, string):
     returned_string = ''
@@ -85,6 +83,7 @@ def find_taxonomy(index, tax_index, string):
     else:
         return find_taxonomy(index, tax_index + 1, concat(string, remove_trash_from_string(returned_string), find_pattern[tax_index]))
 
+
 def main(common_species, common_variety, disease,rot, input_name):
     start_time = time.time()
     print('program started.')
@@ -99,6 +98,7 @@ def main(common_species, common_variety, disease,rot, input_name):
         print("no matches found")
 
     print(time.time() - start_time)
+
 
 def main_batch(file_path):
     with open(file_path, "r", encoding='utf-8') as file:
@@ -116,9 +116,22 @@ def main_batch(file_path):
             else:
                 print("No 'species' column found in the row")
 
+
 if __name__ == '__main__':
-    with open('taxonomy.csv', 'w', newline='', encoding='utf-8') as file:
+    taxonomy = []
+    get_taxonomy = 'tomato_cultivars/tomato_cultivars_taxonomy.csv'
+    name_dataset_information = 'tomato_cultivars/tomato_cultivars_dataset_information.csv'
+
+    with open('taxonomy_of_all_plants.txt', 'r', encoding="utf-8") as file:
+        text = file.read()
+
+    pattern = r'\s{2,}'
+    elements = re.split(pattern, text)
+    for element in elements:
+        taxonomy.append(element)
+
+    with open(get_taxonomy, 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
         writer.writerow(['common_species', 'common_variety','disease','rot', 'kingdom', 'phylum', 'class', 'order', 'family', 'subfamily', 'genus', 'species'])
 
-    main_batch('dataset_information.csv')
+    main_batch(name_dataset_information)
