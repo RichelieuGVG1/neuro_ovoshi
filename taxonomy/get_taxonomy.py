@@ -104,7 +104,7 @@ def main_batch(file_path):
     with open(file_path, "r", encoding='utf-8') as file:
         reader = csv.DictReader(file)
         headers = reader.fieldnames
-        print(f"Headers found: {headers}")  # Debug print
+        print(f"Headers found: {headers}")  
         for row in reader:
             species = row.get('species')
             common_species = row.get('common_species', '')
