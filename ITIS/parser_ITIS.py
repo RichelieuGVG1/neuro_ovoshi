@@ -131,7 +131,6 @@ def convert_common_to_scientific(data_common_names):
                 button_1 = WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.XPATH, "//input[@type='RADIO' and @name='search_topic' and @value='Common_Name']"))
                 )
-                print("ЧЕКБОКС")
 
                 select_element = WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.NAME, "search_kingdom"))
@@ -146,13 +145,10 @@ def convert_common_to_scientific(data_common_names):
                 )
                 input_field.send_keys(data_common_name)
 
-                print("Текст успешно введен в поле ввода.")
-
                 button = WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.NAME, "Go"))
                 )
                 button.click()
-                print("Кнопка успешно нажата.")
 
                 time.sleep(1)
                 WebDriverWait(driver, 10).until(
@@ -180,9 +176,6 @@ def convert_common_to_scientific(data_common_names):
             finally:
                 driver.quit()
 
-        if not success:
-            print("Не удалось выполнить задачу за 3 попытки.")
-
 def convert_scientific_to_common(data_scientific_names):
     for data_scientific_name in data_scientific_names:
         url,chrome_options = conect_to_site()
@@ -201,7 +194,6 @@ def convert_scientific_to_common(data_scientific_names):
             button_1 = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.XPATH, "//input[@type='RADIO' and @name='search_topic' and @value='Scientific_Name']"))
             )
-            print("ЧЕКБОКС")
 
             select_element = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.NAME, "search_kingdom"))
@@ -216,13 +208,10 @@ def convert_scientific_to_common(data_scientific_names):
             )
             input_field.send_keys(data_scientific_name)
 
-            print("Текст успешно введен в поле ввода.")
-
             button = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.NAME, "Go"))
             )
             button.click()
-            print("Кнопка успешно нажата.")
 
             time.sleep(1)
             WebDriverWait(driver, 10).until(
@@ -249,9 +238,6 @@ def convert_scientific_to_common(data_scientific_names):
             print(f"Попытка {attempt} не удалась. Ошибка: {e}")
         finally:
             driver.quit()
-
-    if not success:
-        print("Не удалось выполнить задачу за 3 попытки.")
     
 
 def main():
